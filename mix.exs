@@ -58,7 +58,8 @@ defmodule Vt.MixProject do
       {:bandit, "~> 1.5"},
       {:req, "~> 0.5.0"},
       {:oban, "~> 2.19"},
-      {:igniter, "~> 0.5", only: [:dev]}
+      {:igniter, "~> 0.5", only: [:dev]},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
     ]
   end
 

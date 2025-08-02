@@ -20,10 +20,22 @@ defmodule VtWeb.Router do
     get "/", PageController, :home
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", VtWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", VtWeb do
+    pipe_through :api
+
+    scope "/transport" do
+      # get "/fare", TransportController, :estimate_fare
+      # get "/timetable", TimetableController, :get
+
+      # Train
+      scope "/metro" do
+      end
+
+      # Bus
+      scope "/ptv" do
+      end
+    end
+  end
 
   # Enable LiveDashboard in development
   if Application.compile_env(:vt, :dev_routes) do
