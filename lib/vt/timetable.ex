@@ -24,7 +24,7 @@ defmodule Vt.Timetable do
       |> URI.append_path(path)
       |> URI.append_query(URI.encode_query(params))
 
-    signature = :crypto.mac(:sha, api_key, request) |> Base.encode16()
+    signature = :crypto.mac(:sha, api_key, "#{uri.path}?#{uri.query}") |> Base.encode16()
 
     req =
       Req.new(
