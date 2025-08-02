@@ -4,7 +4,7 @@
 
 ## Disclaimer
 
-This project is not endorsed by Public Transport Victoria (PTV) or VicRoads.
+This project is not affiliated nor endorsed by Public Transport Victoria ([PTV](https://www.ptv.vic.gov.au)) or [VicRoads](https://www.vicroads.vic.gov.au).
 All Timetable data is licensed from Public Transport Victoria under a Creative Commons Attribution 4.0 International License, find a copy [here](https://creativecommons.org/licenses/by/4.0/).
 
 ## License
