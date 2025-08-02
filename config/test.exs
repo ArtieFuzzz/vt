@@ -1,4 +1,5 @@
 import Config
+config :vt, Oban, testing: :manual
 
 # Configure your database
 #

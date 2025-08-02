@@ -11,6 +11,7 @@ defmodule Vt.Application do
       VtWeb.Telemetry,
       Vt.Repo,
       {DNSCluster, query: Application.get_env(:vt, :dns_cluster_query) || :ignore},
+      {Oban, Application.fetch_env!(:vt, Oban)},
       {Phoenix.PubSub, name: Vt.PubSub},
       # Start a worker by calling: Vt.Worker.start_link(arg)
       # {Vt.Worker, arg},
