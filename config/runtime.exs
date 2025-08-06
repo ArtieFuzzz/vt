@@ -13,6 +13,11 @@ source!(
   require_files: [Path.absname(".env", env_dir_prefix)]
 )
 
+config :vt,
+  ptv_dev_id: env!("VT_PTV_DEV_ID", :string!),
+  ptv_api_key: env!("VT_PTV_API_KEY", :string!),
+  vic_opendata_key: env!("VT_VIC_OPENDATA_KEY", :string!)
+
 # config/runtime.exs is executed for all environments, including
 # during releases. It is executed after compilation and before the
 # system starts, so it is typically used to load production configuration

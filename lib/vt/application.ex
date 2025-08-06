@@ -12,6 +12,7 @@ defmodule Vt.Application do
       Vt.Repo,
       {DNSCluster, query: Application.get_env(:vt, :dns_cluster_query) || :ignore},
       {Oban, Application.fetch_env!(:vt, Oban)},
+      Vt.Timetable,
       {Phoenix.PubSub, name: Vt.PubSub},
       # Start a worker by calling: Vt.Worker.start_link(arg)
       # {Vt.Worker, arg},

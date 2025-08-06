@@ -4,7 +4,7 @@ defmodule Vt.Timetable do
 
   @base_url "https://timetableapi.ptv.vic.gov.au/v3"
 
-  def start_link(_init, _opts) do
+  def start_link(_init) do
     GenServer.start_link(
       __MODULE__,
       {Application.get_env(:vt, :ptv_dev_id), Application.get_env(:vt, :ptv_api_key)},
@@ -17,20 +17,24 @@ defmodule Vt.Timetable do
     {:ok, init_arg}
   end
 
-  # Write a request/3 function
-  defp request!(path, params, _state = {dev_id, api_key}) do
+  defp request!(path, query, _state = {dev_id, api_key}) do
+    request_query = URI.encode_query(query ++ [devid: dev_id])
+
     uri =
       URI.parse(@base_url)
       |> URI.append_path(path)
-      |> URI.append_query(URI.encode_query(params))
+      |> URI.append_query(request_query)
 
-    signature = :crypto.mac(:sha, api_key, "#{uri.path}?#{uri.query}") |> Base.encode16()
+    IO.puts(inspect(uri))
+    IO.puts("#{uri.path}#{uri.query}")
+
+    signature = :crypto.mac(:hmac, :sha, api_key, "#{uri.path}?#{uri.query}") |> Base.encode16()
 
     req =
       Req.new(
         url: uri,
         headers: [accept: "application/json"],
-        params: params ++ [devid: dev_id, signature: signature]
+        params: query ++ [signature: signature]
       )
 
     Req.run!(req)
@@ -38,8 +42,11 @@ defmodule Vt.Timetable do
 
   @impl true
   def handle_call(:healthcheck, _from, state) do
-    response = request!("/healthcheck", [], state)
+    response = request!("/route_types", [], state)
 
     {:reply, response, state}
   end
+
+  # Helper functions
+  def health_check, do: GenServer.call(__MODULE__, :healthcheck)
 end
