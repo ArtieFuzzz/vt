@@ -1,4 +1,17 @@
 import Config
+import Dotenvy
+
+env_dir_prefix = System.get_env("RELEASE_ROOT") || Path.expand("./envs")
+
+source!(
+  [
+    Path.absname(".env", env_dir_prefix),
+    Path.absname(".#{config_env()}.env", env_dir_prefix),
+    Path.absname(".#{config_env()}.overrides.env", env_dir_prefix),
+    System.get_env()
+  ],
+  require_files: [Path.absname(".env", env_dir_prefix)]
+)
 
 # config/runtime.exs is executed for all environments, including
 # during releases. It is executed after compilation and before the
@@ -16,24 +29,24 @@ import Config
 #
 # Alternatively, you can use `mix phx.gen.release` to generate a `bin/server`
 # script that automatically sets the env var above.
-if System.get_env("PHX_SERVER") do
+if env!("PHX_SERVER", :boolean, false) do
   config :vt, VtWeb.Endpoint, server: true
 end
 
 if config_env() == :prod do
   database_url =
-    System.get_env("DATABASE_URL") ||
+    env!("DATABASE_URL", :string?) ||
       raise """
       environment variable DATABASE_URL is missing.
       For example: ecto://USER:PASS@HOST/DATABASE
       """
 
-  maybe_ipv6 = if System.get_env("ECTO_IPV6") in ~w(true 1), do: [:inet6], else: []
+  maybe_ipv6 = if env!("ECTO_IPV6", :boolean!) in ~w(true 1), do: [:inet6], else: []
 
   config :vt, Vt.Repo,
     # ssl: true,
     url: database_url,
-    pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
+    pool_size: env!("POOL_SIZE", :integer, 10),
     socket_options: maybe_ipv6
 
   # The secret key base is used to sign/encrypt cookies and other secrets.
@@ -42,16 +55,16 @@ if config_env() == :prod do
   # to check this value into version control, so we use an environment
   # variable instead.
   secret_key_base =
-    System.get_env("SECRET_KEY_BASE") ||
+    env!("SECRET_KEY_BASE", :string?) ||
       raise """
       environment variable SECRET_KEY_BASE is missing.
       You can generate one by calling: mix phx.gen.secret
       """
 
-  host = System.get_env("PHX_HOST") || "example.com"
-  port = String.to_integer(System.get_env("PORT") || "4000")
+  host = env!("PHX_HOST", :string, "example.com")
+  port = env!("PORT", :integer, 4000)
 
-  config :vt, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
+  config :vt, :dns_cluster_query, env!("DNS_CLUSTER_QUERY", :string)
 
   config :vt, VtWeb.Endpoint,
     url: [host: host, port: 443, scheme: "https"],

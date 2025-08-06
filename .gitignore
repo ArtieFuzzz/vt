@@ -46,5 +46,5 @@ devenv.local.nix
 .pre-commit-config.yaml
 
 # Sensitive files
-.env
-pg-data
+envs/
+postgres-data

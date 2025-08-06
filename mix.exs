@@ -59,7 +59,8 @@ defmodule Vt.MixProject do
       {:req, "~> 0.5.0"},
       {:oban, "~> 2.19"},
       {:igniter, "~> 0.5", only: [:dev]},
-      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:dotenvy, "~> 1.0.0"}
     ]
   end
 
