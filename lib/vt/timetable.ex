@@ -25,9 +25,6 @@ defmodule Vt.Timetable do
       |> URI.append_path(path)
       |> URI.append_query(request_query)
 
-    IO.puts(inspect(uri))
-    IO.puts("#{uri.path}#{uri.query}")
-
     signature = :crypto.mac(:hmac, :sha, api_key, "#{uri.path}?#{uri.query}") |> Base.encode16()
 
     req =
@@ -41,12 +38,12 @@ defmodule Vt.Timetable do
   end
 
   @impl true
-  def handle_call(:healthcheck, _from, state) do
-    response = request!("/route_types", [], state)
+  def handle_call({:request, route, query}, _from, state) do
+    response = request!(route, query, state)
 
     {:reply, response, state}
   end
 
   # Helper functions
-  def health_check, do: GenServer.call(__MODULE__, :healthcheck)
+  def route_types, do: GenServer.call(__MODULE__, {:request, "/route_types", []})
 end
