@@ -4,4 +4,11 @@
   <h1>
     <p>Hello, World!</p>
   </h1>
+  <div class="w-full h-full justify-center items-center gap-2">
+    <ul>
+      <li :for={route <- @routes}>
+        <p>{route["route_name"]} - {route["route_number"]}</p>
+      </li>
+    </ul>
+  </div>
 </div>

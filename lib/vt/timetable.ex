@@ -27,23 +27,32 @@ defmodule Vt.Timetable do
 
     signature = :crypto.mac(:hmac, :sha, api_key, "#{uri.path}?#{uri.query}") |> Base.encode16()
 
+    uri = uri |> URI.append_query(URI.encode_query(signature: signature))
+
     req =
       Req.new(
         url: uri,
-        headers: [accept: "application/json"],
-        params: query ++ [signature: signature]
+        headers: [accept: "application/json"]
       )
 
-    Req.run!(req)
+    Req.get!(req)
   end
 
   @impl true
   def handle_call({:request, route, query}, _from, state) do
-    response = request!(route, query, state)
+    request = request!(route, query, state)
 
-    {:reply, response, state}
+    if request.status == 200 do
+      {:reply, request.body, state}
+    else
+      {:reply, {:error, request.body}, state}
+    end
   end
 
   # Helper functions
+  # - More high-level
   def route_types, do: GenServer.call(__MODULE__, {:request, "/route_types", []})
+
+  def search_route(name, type \\ 2),
+    do: GenServer.call(__MODULE__, {:request, "/routes", [route_name: name, route_types: type]})
 end
